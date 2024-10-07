@@ -1,49 +1,218 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - GloboClima_Frontend</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/GloboClima_Frontend.styles.css" asp-append-version="true" />
-</head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">GloboClima_Frontend</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    var authToken = HttpContextAccessor.HttpContext.Request.Cookies["AuthToken"];
+    var mail = HttpContextAccessor.HttpContext.Request.Cookies["AuthMail"];
+}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+    <head>
+
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="stylesheet" href="~/css/sidebar-menu.css">
+        <link rel="stylesheet" href="~/css/simplebar.css">
+        <link rel="stylesheet" href="~/css/apexcharts.css">
+        <link rel="stylesheet" href="~/css/prism.css">
+        <link rel="stylesheet" href="~/css/rangeslider.css">
+        <link rel="stylesheet" href="~/css/sweetalert.min.css">
+        <link rel="stylesheet" href="~/css/quill.snow.css">
+        <link rel="stylesheet" href="~/css/google-icon.css">
+        <link rel="stylesheet" href="~/css/remixicon.css">
+        <link rel="stylesheet" href="~/css/swiper-bundle.min.css">
+        <link rel="stylesheet" href="~/css/fullcalendar.main.css">
+        <link rel="stylesheet" href="~/css/style.css">
+
+        <link rel="icon" type="image/png" href="~/images/favicon.png">
+
+        <title>Globo Clima - @ViewData["Title"]</title>
+
+    </head>
+
+    <body class="boxed-size">
+
+        <div class="preloader" id="preloader">
+            <div class="preloader">
+                <div class="waviy position-relative">
+                    <span class="d-inline-block">G</span>
+                    <span class="d-inline-block">L</span>
+                    <span class="d-inline-block">O</span>
+                    <span class="d-inline-block">B</span>
+                    <span class="d-inline-block">O</span>
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - GloboClima_Frontend - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
-</body>
+
+        <div class="sidebar-area" id="sidebar-area">
+
+            <div class="logo position-relative">
+                <a href="/" class="d-block text-decoration-none position-relative">
+                    <img src="~/images/logo-icon.png" alt="logo-icon">
+                    <span class="logo-text fw-bold text-dark">Globo Clima</span>
+                </a>
+                <button class="sidebar-burger-menu bg-transparent p-0 border-0 opacity-0 z-n1 position-absolute top-50 end-0 translate-middle-y" id="sidebar-burger-menu">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+
+            <aside id="layout-menu" class="layout-menu menu-vertical menu active" data-simplebar>
+                <ul class="menu-inner">
+
+                    <li class="menu-item">
+                        <a href="/" class="menu-link">
+                            <span class="material-symbols-outlined">home</span>
+                            <span class="title">Home</span>
+                        </a>
+                    </li>
+
+                    @if (!string.IsNullOrEmpty(authToken))
+                    {
+                        <li class="menu-item">
+                            <a href="/favorite/index" class="menu-link">
+                                <span class="material-symbols-outlined menu-icon">star</span>
+                                <span class="title">Meus Favoritos</span>
+                            </a>
+                        </li>
+                    }
+
+                    @if (string.IsNullOrEmpty(authToken))
+                    {
+
+                        <li class="menu-item">
+                            <a href="/auth/login" class="menu-link">
+                                <span class="material-symbols-outlined menu-icon">login</span>
+                                <span class="title">Login</span>
+                            </a>
+                        </li>
+
+                        <li class="menu-item">
+                            <a href="/auth/register" class="menu-link">
+                                <span class="material-symbols-outlined">how_to_reg</span>
+                                <span class="title">Register</span>
+                            </a>
+                        </li>
+                    }
+
+
+
+                </ul>
+            </aside>
+
+        </div>
+
+        <div class="container-fluid">
+            <div class="main-content d-flex flex-column">
+
+                <header class="header-area bg-white mb-4 rounded-bottom-15" id="header-area">
+                    <div class="row align-items-center">
+                        <div class="col-lg-4 col-sm-6">
+                            <div class="left-header-content">
+                                <ul class="d-flex align-items-center ps-0 mb-0 list-unstyled justify-content-center justify-content-sm-start">
+                                    <li>
+                                        <button class="header-burger-menu bg-transparent p-0 border-0" id="header-burger-menu">
+                                            <span class="material-symbols-outlined">menu</span>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-8 col-sm-6">
+                            <div class="right-header-content mt-2 mt-sm-0">
+                                <ul class="d-flex align-items-center justify-content-center justify-content-sm-end ps-0 mb-0 list-unstyled">
+                                    <li class="header-right-item">
+                                        <div class="light-dark">
+                                            <button class="switch-toggle settings-btn dark-btn p-0 bg-transparent" id="switch-toggle">
+                                                <span class="dark"><i class="material-symbols-outlined">light_mode</i></span>
+                                                <span class="light"><i class="material-symbols-outlined">dark_mode</i></span>
+                                            </button>
+                                        </div>
+                                    </li>
+                                    <li class="header-right-item">
+                                        <button class="fullscreen-btn bg-transparent p-0 border-0" id="fullscreen-button">
+                                            <i class="material-symbols-outlined text-body">fullscreen</i>
+                                        </button>
+                                    </li>
+
+                                    @if (!string.IsNullOrEmpty(authToken))
+                                    {
+                                        <li class="header-right-item">
+
+                                            <div class="dropdown admin-profile">
+
+                                                <div class="d-xxl-flex align-items-center bg-transparent border-0 text-start p-0 cursor dropdown-toggle" data-bs-toggle="dropdown">
+                                                    <div class="flex-shrink-0">
+                                                        <img class="rounded-circle wh-40 administrator" src="~/images/user-8.jpg" alt="admin">
+                                                    </div>
+                                                    <div class="flex-grow-1 ms-2">
+                                                        <div class="d-flex align-items-center justify-content-between">
+                                                            <div class="d-none d-xxl-block">
+                                                                <div class="d-flex align-content-center">
+                                                                    <h3>@(mail)</h3>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="dropdown-menu border-0 bg-white dropdown-menu-end">
+                                                    <div class="d-flex align-items-center info">
+                                                        <div class="flex-shrink-0">
+                                                        <img class="rounded-circle wh-30 administrator" src="~/images/user-8.jpg" alt="admin">
+                                                        </div>
+                                                        <div class="flex-grow-1 ms-2">
+                                                        <h3 class="fw-medium">@(mail)</h3>
+                                                        </div>
+                                                    </div>
+                                                    <ul class="admin-link ps-0 mb-0 list-unstyled">
+                                                        <li>
+                                                            <a class="dropdown-item d-flex align-items-center text-body" href="/auth/logout">
+                                                                <i class="material-symbols-outlined">logout</i>
+                                                                <span class="ms-2">Logout</span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+
+                                            </div>
+
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                @RenderBody()
+
+                <div class="flex-grow-1"></div>
+
+                @Html.Partial("_Footer")
+
+            </div>
+        </div>
+
+        <script src="~/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/sidebar-menu.js"></script>
+        <script src="~/js/dragdrop.js"></script>
+        <script src="~/js/rangeslider.min.js"></script>
+        <script src="~/js/sweetalert.js"></script>
+        <script src="~/js/quill.min.js"></script>
+        <script src="~/js/data-table.js"></script>
+        <script src="~/js/prism.js"></script>
+        <script src="~/js/clipboard.min.js"></script>
+        <script src="~/js/feather.min.js"></script>
+        <script src="~/js/simplebar.min.js"></script>
+        <script src="~/js/apexcharts.min.js"></script>
+        <script src="~/js/swiper-bundle.min.js"></script>
+        <script src="~/js/fullcalendar.main.js"></script>
+        <script src="~/js/custom/apexcharts.js"></script>
+        <script src="~/js/custom/custom.js"></script>
+
+        @RenderSection("Scripts", required: false)
+
+    </body>
 </html>

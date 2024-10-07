@@ -1,0 +1,56 @@
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@model Weather
+@{
+    ViewData["Title"] = "Busca Clima";
+    var authToken = HttpContextAccessor.HttpContext.Request.Cookies["AuthToken"];
+}
+
+
+
+@if (Model != null)
+{
+    <div class="card bg-white border-0 rounded-3 mb-4">
+        <div class="card-body p-4">
+            <h2>@Model.Name</h2>
+            <hr />
+            <p><strong>Temperatura:</strong> @Model.Main.Temp °C</p>
+            <p><strong>Pressão:</strong> @Model.Main.Pressure</p>
+            <p><strong>Umidade:</strong> @(Model.Main.Humidity)%</p>
+            <p><strong>Vento:</strong> @(Model.Wind.Speed)km/h</p>
+            <hr />
+
+            @if (!string.IsNullOrEmpty(authToken))
+            {
+                @using (Html.BeginForm("Save", "Favorite", FormMethod.Post))
+                {
+                    <a href="/" class="btn btn-primary py-2 px-4 bg-primary bg-opacity-10 fw-semibold text-primary border-0 hover-bg">
+                        Voltar
+                    </a>
+                    <input type="hidden" name="city" value="@Model.Name" />
+                    <button type="submit" class="btn btn-primary py-2 px-4 bg-primary bg-opacity-10 fw-semibold text-primary border-0 hover-bg">
+                        Salvar nos Favoritos
+                    </button>
+                }
+            }
+            else
+            {
+                <a href="/" class="btn btn-primary py-2 px-4 bg-primary bg-opacity-10 fw-semibold text-primary border-0 hover-bg">
+                    Voltar
+                </a>
+                <button href="!#" class="btn btn-primary py-2 px-4 bg-primary bg-opacity-10 fw-semibold text-primary border-0 hover-bg" disabled>
+                    Salvar nos Favoritos
+                </button>
+            }
+        </div>
+    </div>
+
+
+}
+else
+{
+    <p>Nenhum dado encontrado para a busca.</p>
+
+    <a href="/" class="btn btn-primary py-2 px-4 bg-primary bg-opacity-10 fw-semibold text-primary border-0 hover-bg">
+        Voltar
+    </a>
+}

@@ -1,8 +1,70 @@
-﻿@{
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
     ViewData["Title"] = "Home Page";
+    var authToken = HttpContextAccessor.HttpContext.Request.Cookies["AuthToken"];
+    var mail = HttpContextAccessor.HttpContext.Request.Cookies["AuthMail"];
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="main-content-container overflow-hidden">
+    <div class="row justify-content-center">
+
+        @if (!string.IsNullOrEmpty(authToken))
+        {
+            <div class="col-lg-12">
+            <div class="card bg-primary border-0 rounded-3 welcome-box mb-4">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-lg-8 col-md-8 col-sm-8">
+                            <div class="border-bottom">
+                                <h3 class="text-white fw-semibold mb-1">Olá, <span class="text-danger-div">@(mail)</span></h3>
+                                <p class="text-light">Faça suas buscas climáticas e países que deseja conhecer.</p>
+                            </div>
+
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4">
+                            <div class="welcome-img text-center text-sm-end mt-4 mt-sm-0">
+                                <img src="images/starter.png" alt="welcome">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+
+        <div class="col-lg-12">
+            <div class="card bg-white border-0 rounded-3 mb-4">
+                <div class="card-body p-4">
+                    <h3>Buscar Informações Climáticas</h3>
+                    <hr />
+                    @using (Html.BeginForm("SearchWeather", "Home", FormMethod.Post))
+                    {
+                        <div class="form-group mb-4 position-relative">
+                            <input type="text" name="search" class="form-control h-55 bg-body-bg border-0 text-dark rounded-pill" placeholder="Insira sua busca aqui..">
+                            <button type="submit" class="position-absolute top-50 end-0 translate-middle-y bg-transparent p-0 pe-3 border-0">
+                                <i class="ri-search-line fs-24 position-relative top-1 text-primary"></i>
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="card bg-white border-0 rounded-3 mb-4">
+                <div class="card-body p-4">
+                    <h3>Buscar Informações de Países</h3>
+                    <hr />
+                    @using (Html.BeginForm("SearchCountry", "Home", FormMethod.Post))
+                    {
+                        <div class="form-group mb-4 position-relative">
+                            <input type="text" name="search" class="form-control h-55 bg-body-bg border-0 text-dark rounded-pill" placeholder="Insira sua busca aqui..">
+                            <button type="submit" class="position-absolute top-50 end-0 translate-middle-y bg-transparent p-0 pe-3 border-0">
+                                <i class="ri-search-line fs-24 position-relative top-1 text-primary"></i>
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

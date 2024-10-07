@@ -1,0 +1,105 @@
+﻿@model List<Favorite>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="main-content-container overflow-hidden">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+        <h2 class="mb-0">Meus Favoritos</h2>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div id="errorAlert" class="alert alert-danger alert-dismissible">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div id="errorAlert" class="alert alert-success alert-dismissible">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="card bg-white border-0 rounded-3 mb-4">
+        <div class="card-body p-0">
+
+            <div class="default-table-area style-two all-products">
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th scope="col">Id</th>
+                                <th scope="col">Cidade</th>
+                                <th scope="col">País</th>
+                                <th scope="col">Opções</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @if (Model.Count > 0)
+                            {
+                                @foreach (var favorite in Model)
+                                {
+                                    <tr>
+                                        <td class="text-body">@favorite.Id</td>
+                                        <td class="text-secondary">@favorite.City</td>
+                                        <td class="text-secondary">@favorite.Country</td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-1">
+                                                @if (!string.IsNullOrEmpty(@favorite.City))
+                                                {
+                                                    @using (Html.BeginForm("SearchWeather", "Home", FormMethod.Post))
+                                                    {
+                                                        <input type="hidden" name="search" value="@favorite.City">
+                                                        <button class="ps-0 border-0 bg-transparent lh-1 position-relative top-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="View">
+                                                            <i class="material-symbols-outlined fs-16 text-primary">visibility</i>
+                                                        </button>
+                                                    }
+                                                }
+
+                                                @if (!string.IsNullOrEmpty(@favorite.Country))
+                                                {
+                                                    @using (Html.BeginForm("SearchCountry", "Home", FormMethod.Post))
+                                                    {
+                                                        <input type="hidden" name="search" value="@favorite.Country">
+                                                        <button class="ps-0 border-0 bg-transparent lh-1 position-relative top-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="View">
+                                                            <i class="material-symbols-outlined fs-16 text-primary">visibility</i>
+                                                        </button>
+                                                    }
+                                                }
+
+                                                @using (Html.BeginForm("Delete", "Favorite", FormMethod.Post))
+                                                {
+                                                    <input type="hidden" name="hashId" value="@favorite.Id">
+                                                    <button class="ps-0 border-0 bg-transparent lh-1 position-relative top-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Delete">
+                                                        <i class="material-symbols-outlined fs-16 text-danger">delete</i>
+                                                    </button>
+                                                }
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center">Nenhum Registro encontrado.</td>
+                                </tr>
+                            }
+
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>

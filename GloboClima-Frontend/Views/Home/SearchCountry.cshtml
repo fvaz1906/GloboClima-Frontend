@@ -1,0 +1,117 @@
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@model Country
+@{
+    ViewData["Title"] = "Busca Países";
+    var authToken = HttpContextAccessor.HttpContext.Request.Cookies["AuthToken"];
+}
+
+
+
+@if (Model != null)
+{
+    <div class="card bg-white border-0 rounded-3 mb-4">
+        <div class="card-body p-4">
+            <h2>@Model.Name.Common</h2>
+            <hr />
+            <div class="row">
+                <div class="col-md-3 mb-4">
+                    <img src="@Model.Flags.Png" class="border border-3" alt="screenshorts">
+                </div>
+                <div class="col-md-9 mb-4">
+                    <p><strong>Nome Oficial:</strong> @Model.Name.Official</p>
+                    <p><strong>Código do País:</strong> @Model.Cca2</p>
+                    <p><strong>País independente:</strong> @(Model.Independent ? "Sim" : "Não") </p>
+                    <p><strong>Membro da Onu:</strong> @(Model.UnMember ? "Sim" : "Não") </p>
+                    <p><strong>Moedas:</strong></p>
+                    @if (Model.Currencies != null && Model.Currencies.Any())
+                    {
+                        <ul>
+                            @foreach (var currency in Model.Currencies)
+                            {
+                                <li>
+                                    <strong>@currency.Key:</strong> @currency.Value.Name (@currency.Value.Symbol)
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p>Nenhuma moeda disponível.</p>
+                    }
+
+                    <p><strong>Capitais:</strong></p>
+                    @if (Model.Capital != null && Model.Capital.Any())
+                    {
+                        <ul>
+                            @foreach (var capital in Model.Capital)
+                            {
+                                <li>@capital</li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p>Nenhuma capital disponível.</p>
+                    }
+
+                    <p><strong>Região:</strong> @(Model.Region) </p>
+
+                    <p><strong>Línguas:</strong></p>
+                    @if (Model.Languages != null && Model.Languages.Any())
+                    {
+                        <ul>
+                            @foreach (var language in Model.Languages)
+                            {
+                                <li>
+                                    <strong>@language.Key:</strong> @language.Value
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p>Nenhuma língua disponível.</p>
+                    }
+
+                    <hr />
+
+
+                    @if (!string.IsNullOrEmpty(authToken))
+                    {
+                        @using (Html.BeginForm("Save", "Favorite", FormMethod.Post))
+                        {
+                            <a href="/" class="btn btn-primary py-2 px-4 bg-primary bg-opacity-10 fw-semibold text-primary border-0 hover-bg">
+                                Voltar
+                            </a>
+                            <input type="hidden" name="country" value="@Model.Name.Common" />
+                            <button type="submit" class="btn btn-primary py-2 px-4 bg-primary bg-opacity-10 fw-semibold text-primary border-0 hover-bg">
+                                Salvar nos Favoritos
+                            </button>
+                        }
+                    }
+                    else
+                    {
+                        <a href="/" class="btn btn-primary py-2 px-4 bg-primary bg-opacity-10 fw-semibold text-primary border-0 hover-bg">
+                            Voltar
+                        </a>
+                        <button href="!#" class="btn btn-primary py-2 px-4 bg-primary bg-opacity-10 fw-semibold text-primary border-0 hover-bg" disabled>
+                            Salvar nos Favoritos
+                        </button>
+                    }
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+}
+else
+{
+    <p>Nenhum dado encontrado para a busca.</p>
+
+    <a href="/" class="btn btn-primary py-2 px-4 bg-primary bg-opacity-10 fw-semibold text-primary border-0 hover-bg">
+        Voltar
+    </a>
+}
